@@ -1,0 +1,9 @@
+.env
+.git/
+.github/
+config/
+downloads/
+deploy/
+frontend/
+scripts/
+*.md

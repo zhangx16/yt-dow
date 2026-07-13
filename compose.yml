@@ -1,0 +1,23 @@
+services:
+  yt-dlp-web-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: yt-dlp-lite:local
+    container_name: yt-dlp-web-ui
+    restart: unless-stopped
+    ports:
+      - "${BIND_ADDR:-127.0.0.1}:${HOST_PORT:-3033}:3033"
+    environment:
+      WEBUI_USER: "${WEBUI_USER}"
+      WEBUI_PASSWORD: "${WEBUI_PASSWORD}"
+      QUEUE_SIZE: "${QUEUE_SIZE:-2}"
+      DOWNLOAD_DIR: "/downloads"
+    volumes:
+      - ./downloads:/downloads
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:3033/healthz >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

@@ -1,0 +1,20 @@
+# Local credentials
+.env
+.env.local
+
+# Runtime data
+config/
+downloads/
+*.db
+*.db-shm
+*.db-wal
+*.part
+*.ytdl
+
+# Build and editor output
+yt-dlp-lite
+coverage/
+.DS_Store
+.idea/
+.vscode/
+*.log
