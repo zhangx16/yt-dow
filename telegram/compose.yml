@@ -1,0 +1,44 @@
+services:
+  telegram-api:
+    image: ${TELEGRAM_API_IMAGE:-aiogram/telegram-bot-api:latest}
+    restart: unless-stopped
+    environment:
+      TELEGRAM_API_ID: ${TELEGRAM_API_ID:?Telegram API ID required}
+      TELEGRAM_API_HASH: ${TELEGRAM_API_HASH:?Telegram API hash required}
+      TELEGRAM_LOCAL: "1"
+      TELEGRAM_VERBOSITY: "0"
+    volumes:
+      - api-data:/var/lib/telegram-bot-api
+      - ./work:/work:ro
+    networks: [bot]
+    mem_limit: 768m
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: "2"}
+  video-bot:
+    build: .
+    restart: unless-stopped
+    depends_on: [telegram-api]
+    env_file: .env
+    environment:
+      TG_API_BASE: http://telegram-api:8081
+      RCLONE_CONFIG: /rclone/rclone.conf
+      DRIVE_TARGET: ${DRIVE_TARGET:-gdrive:Media/TelegramVideos}
+      VIDEO_HEIGHT: ${VIDEO_HEIGHT:-1080}
+      WORK_BUDGET_GIB: ${WORK_BUDGET_GIB:-15}
+      MIN_FREE_GIB: ${MIN_FREE_GIB:-15}
+    volumes:
+      - ./work:/work
+      - ./state:/state
+      # Mount directory read-write: rclone refreshes and atomically replaces OAuth config.
+      - ${RCLONE_CONFIG_DIR:-/var/lib/rclone-media/.config/rclone}:/rclone
+    networks: [bot]
+    mem_limit: 1536m
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: "2"}
+volumes:
+  api-data:
+networks:
+  bot:

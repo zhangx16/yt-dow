@@ -1,0 +1,6 @@
+.env
+work
+state
+__pycache__
+test_worker.py
+README.md

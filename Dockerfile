@@ -6,8 +6,10 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/yt-dlp-lite .
 
 FROM python:3.13-alpine
 
-RUN apk add --no-cache ca-certificates ffmpeg \
-    && pip install --no-cache-dir "yt-dlp[default]==2026.6.9"
+RUN apk add --no-cache ca-certificates ffmpeg nodejs \
+    && pip install --no-cache-dir "yt-dlp[default]==2026.8.19" \
+    && mkdir -p /etc/yt-dlp \
+    && printf '%s\n' '--js-runtimes node' > /etc/yt-dlp/config
 
 COPY --from=builder /out/yt-dlp-lite /usr/local/bin/yt-dlp-lite
 

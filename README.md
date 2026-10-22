@@ -94,6 +94,9 @@ docker compose down
 
 ## 项目结构
 
+可选的 Telegram 视频回传与 Google Drive 归档模块见 [telegram/README.md](telegram/README.md)。
+它使用独立下载队列，需另行部署，不影响现有网页入口。
+
 ```text
 backend/          精简 Go 后端
 frontend/         无构建依赖的静态前端
